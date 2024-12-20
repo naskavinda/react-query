@@ -1,34 +1,85 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { getTodos, createTodo, toggleTodo, deleteTodo } from './api/todoApi'
+import { Todo } from './types/todo'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [newTodo, setNewTodo] = useState('')
+  const queryClient = useQueryClient()
+
+  const { data: todos = [], isLoading, error } = useQuery({
+    queryKey: ['todos'],
+    queryFn: getTodos
+  })
+
+  const createTodoMutation = useMutation({
+    mutationFn: (title: string) => createTodo({ title, userId: 1 }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['todos'] })
+      setNewTodo('')
+    },
+  })
+
+  const toggleTodoMutation = useMutation({
+    mutationFn: toggleTodo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['todos'] })
+    },
+  })
+
+  const deleteTodoMutation = useMutation({
+    mutationFn: deleteTodo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['todos'] })
+    },
+  })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!newTodo.trim()) return
+    createTodoMutation.mutate(newTodo)
+  }
+
+  if (isLoading) return <div>Loading...</div>
+  if (error) return <div>Error: {(error as Error).message}</div>
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className="app">
+      <h1>Todo List</h1>
+      
+      <form onSubmit={handleSubmit} className="add-todo-form">
+        <input
+          type="text"
+          value={newTodo}
+          onChange={(e) => setNewTodo(e.target.value)}
+          placeholder="Add new todo"
+          className="todo-input"
+        />
+        <button type="submit" className="add-button">Add Todo</button>
+      </form>
+
+      <ul className="todo-list">
+        {todos.map((todo: Todo) => (
+          <li key={todo.id} className="todo-item">
+            <input
+              type="checkbox"
+              checked={todo.completed}
+              onChange={() => toggleTodoMutation.mutate(todo)}
+            />
+            <span style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}>
+              {todo.title}
+            </span>
+            <button
+              onClick={() => deleteTodoMutation.mutate(todo.id)}
+              className="delete-button"
+            >
+              Delete
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 
