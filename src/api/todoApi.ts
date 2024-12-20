@@ -2,12 +2,26 @@ import { Todo, CreateTodoInput } from '../types/todo';
 
 const API_BASE_URL = 'https://jsonplaceholder.typicode.com';
 
-export const getTodos = async (): Promise<Todo[]> => {
-  const response = await fetch(`${API_BASE_URL}/todos`);
+export const getTodos = async ({ pageParam = 1 }) => {
+  const limit = 10;
+  const response = await fetch(
+    `${API_BASE_URL}/todos?_page=${pageParam}&_limit=${limit}`
+  );
+  
   if (!response.ok) {
     throw new Error('Failed to fetch todos');
   }
-  return response.json();
+
+  const totalCount = response.headers.get('x-total-count');
+  const hasNextPage = totalCount && pageParam * limit < parseInt(totalCount);
+  
+  const data = await response.json();
+  
+  return {
+    todos: data,
+    nextPage: hasNextPage ? pageParam + 1 : undefined,
+    totalPages: totalCount ? Math.ceil(parseInt(totalCount) / limit) : undefined
+  };
 };
 
 export const createTodo = async (todo: CreateTodoInput): Promise<Todo> => {
@@ -21,7 +35,6 @@ export const createTodo = async (todo: CreateTodoInput): Promise<Todo> => {
   if (!response.ok) {
     throw new Error('Failed to create todo');
   }
-  console.log(response);
   return response.json();
 };
 

@@ -45,12 +45,29 @@
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.todo-container {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 20px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  padding: 10px;
 }
 
 .add-todo-form {
   display: flex;
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
+  position: sticky;
+  top: 0;
+  background: white;
+  padding: 1rem 0;
+  z-index: 1;
 }
 
 .todo-input {
@@ -77,6 +94,7 @@
 .todo-list {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .todo-item {
@@ -85,6 +103,10 @@
   gap: 1rem;
   padding: 1rem;
   border-bottom: 1px solid #eee;
+}
+
+.todo-item:last-child {
+  border-bottom: none;
 }
 
 .todo-item input[type="checkbox"] {
@@ -104,4 +126,11 @@
 
 .delete-button:hover {
   background-color: #da190b;
+}
+
+.load-more {
+  text-align: center;
+  padding: 1rem;
+  color: #666;
+  font-size: 0.9rem;
 }
