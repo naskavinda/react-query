@@ -50,15 +50,6 @@
   flex-direction: column;
 }
 
-.todo-container {
-  flex: 1;
-  overflow-y: auto;
-  margin-top: 20px;
-  border: 1px solid #eee;
-  border-radius: 4px;
-  padding: 10px;
-}
-
 .add-todo-form {
   display: flex;
   gap: 1rem;
@@ -126,11 +117,4 @@
 
 .delete-button:hover {
   background-color: #da190b;
-}
-
-.load-more {
-  text-align: center;
-  padding: 1rem;
-  color: #666;
-  font-size: 0.9rem;
 }
