@@ -15,12 +15,13 @@ export const getTodos = async ({ pageParam = 1 }) => {
   const totalCount = response.headers.get('x-total-count');
   const hasNextPage = totalCount && pageParam * limit < parseInt(totalCount);
   
+  console.log('hasNextPage', hasNextPage);
   const data = await response.json();
   
   return {
     todos: data,
-    nextPage: hasNextPage ? pageParam + 1 : undefined,
-    totalPages: totalCount ? Math.ceil(parseInt(totalCount) / limit) : undefined
+    hasNextPage: hasNextPage,
+    nextCursor: hasNextPage ? pageParam + 1 : undefined,
   };
 };
 
