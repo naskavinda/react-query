@@ -1,13 +1,22 @@
 /**
  * Main Todo Application Component
- * This component implements a Todo list with infinite scrolling using React Query.
- * Features include:
- * - Fetching todos with infinite scroll pagination
- * - Adding new todos
+ * 
+ * A React component that implements a Todo list with infinite scrolling using React Query
+ * and react-intersection-observer. The component fetches todos in paginated batches and
+ * automatically loads more items when the user scrolls to the bottom of the list.
+ * 
+ * Features:
+ * - Infinite scrolling with automatic loading of more todos
+ * - Adding new todos with optimistic updates
  * - Toggling todo completion status
  * - Deleting todos
- *
- *
+ * - Loading states and error handling
+ * 
+ * Implementation Details:
+ * - Uses useInfiniteQuery for paginated data fetching
+ * - Uses react-intersection-observer for scroll detection
+ * - Implements CRUD operations with React Query mutations
+ * - Handles loading and error states gracefully
  */
 
 import {
